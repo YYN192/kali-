@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Love Jar 💌</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(-45deg, #ffe6eb, #ffd1dc, #ffc1cc, #ffb6c1);
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease infinite;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    color: #5a2d41;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Floating hearts */
+  .heart {
+    position: absolute;
+    bottom: 5vh; /* start higher (previously -20px) */
+    font-size: 20px;
+    animation: float 8s ease-in infinite;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 5px rgba(255, 105, 135, 0.5));
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-130vh) scale(1.6);
+      opacity: 0;
+    }
+  }
+
+  /* Jar */
+  .jar {
+    width: 190px;
+    cursor: pointer;
+    filter: drop-shadow(0 0 12px rgba(255, 182, 193, 0.7));
+    transition: transform 0.3s ease, filter 0.4s ease;
+    animation: softBounce 3s ease-in-out infinite alternate;
+  }
+
+  .jar:hover {
+    transform: scale(1.1) rotate(2deg);
+    filter: drop-shadow(0 0 25px rgba(255, 182, 193, 1));
+  }
+
+  @keyframes softBounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-8px); }
+  }
+
+  .jar.shake {
+    animation: shake 0.6s ease;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(4deg); }
+    40% { transform: rotate(-4deg); }
+    60% { transform: rotate(3deg); }
+    80% { transform: rotate(-3deg); }
+  }
+
+  /* Note */
+  .note {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    padding: 30px 35px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.15);
+    text-align: center;
+    font-size: 1.4em;
+    font-weight: 400;
+    max-width: 350px;
+    margin-top: 30px;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: all 0.6s ease;
+    border: 2px solid rgba(255, 182, 193, 0.7);
+    backdrop-filter: blur(8px);
+    line-height: 1.6;
+  }
+
+  .note.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .note::before {
+    content: "💌";
+    display: block;
+    font-size: 2.2em;
+    margin-bottom: 12px;
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from { text-shadow: 0 0 5px #ff80ab; }
+    to { text-shadow: 0 0 15px #ff4081; }
+  }
+
+  .credits {
+    position: absolute;
+    bottom: 10px;
+    font-size: 0.9em;
+    color: rgba(255,255,255,0.9);
+    font-family: 'Great Vibes', cursive;
+  }
+</style>
+</head>
+<body>
+
+<div id="hearts"></div>
+
+<img src="https://cdn-icons-png.flaticon.com/512/1029/1029183.png" alt="Love Jar" class="jar" id="jar">
+
+<div class="note" id="note"></div>
+
+<audio id="bgm" loop autoplay volume="0.3">
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9b5ddfbcb0.mp3" type="audio/mp3">
+</audio>
+
+<div class="credits">Made with ❤️ just for you</div>
+
+<script>
+const jar = document.getElementById('jar');
+const note = document.getElementById('note');
+const heartsContainer = document.getElementById('hearts');
+
+const loveNotes = [
+  "When I hear your laugh it makes me happy",
+  "When I see your eyes I feel mesmerized",
+  "Every time I see your notification I get excited",
+  "I love how funny you are",
+  "I love how you are good at literally almost everything",
+  "Every time I feel angered or distressed a single text from you can make my day",
+  "When you say you love me I still can’t believe my senses",
+  "When you hug me it feels like I am finally at peace with everything",
+  "Every time you talk about any of your interests with so much happiness it just makes me happy",
+  "You have made me the luckiest guy to ever live since I can call you mine",
+  "You have pushed me to become a better person by just being in my life",
+  "You gave me back the happiness and calm in my soul",
+  "I love how you aren’t afraid to be yourself",
+  "I love how your smile is so beautiful",
+  "You are the prettiest girl I have ever seen",
+  "You are the most extraordinary person I have ever met",
+  "You are the first person to make me feel this loved",
+  "I love your music taste",
+  "I love how you dress",
+  "I love everything about you",
+  "Your laugh is the most contagious I have ever heard",
+  "You understand me better than anyone I have ever met",
+  "You have the most special place in my heart",
+  "I love how I can literally talk with you about anything",
+  "I love how patient you are with me even when I am kind of retarded",
+  "I love how you make me feel when I am around you",
+  "WOW YOUR EYES ARE SO PRETTY",
+  "Your love for math is something I love so much about you",
+  "I love how you are literally the smartest person I know",
+  "Silence feels comfortable with you",
+  "I love the books you read",
+  "Fuck the Fr*nch",
+  "You gave me back my sense of my own value",
+  "I love how you don’t judge me for who I am",
+  "I love how you are literally such a unique person",
+  "I love how we both say silly shit",
+  "Your voice makes my brain feel calm",
+  "I would choose you over anyone or anything",
+  "I love you most",
+  "You are my everything",
+  "With you I feel the most emotionally safe",
+  "What kind of world would it be without you in it?",
+  "I can’t sleep without praying for you before that",
+  "You made everything seem not dull again",
+  "I love your humor",
+  "I love how music reminds me of you",
+  "HOW ARE YOU SO PERFECT???",
+  "WHAT DID I DO TO DESERVE SOMEONE AS GORGEOUS AND AMAZING AS YOU?",
+  "You are perfect"
+];
+
+// --- True Random Note Picker ---
+let shuffledNotes = [];
+let currentIndex = 0;
+let lastNote = null;
+
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function getNextNote() {
+  if (currentIndex === 0 || currentIndex >= shuffledNotes.length) {
+    shuffledNotes = shuffleArray(loveNotes);
+    if (lastNote && shuffledNotes[0] === lastNote) {
+      [shuffledNotes[0], shuffledNotes[1]] = [shuffledNotes[1], shuffledNotes[0]];
+    }
+    currentIndex = 0;
+  }
+  const note = shuffledNotes[currentIndex++];
+  lastNote = note;
+  return note;
+}
+
+// Floating hearts animation
+function createHeart() {
+  const heart = document.createElement('div');
+  heart.classList.add('heart');
+  const heartColors = ['#ff8fab', '#ffb3c6', '#ffc2d1', '#ffd6e0', '#ffe5ec'];
+  heart.textContent = '❤';
+  heart.style.left = Math.random() * 100 + 'vw';
+  heart.style.fontSize = (Math.random() * 22 + 14) + 'px';
+  heart.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
+  heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
+  heartsContainer.appendChild(heart);
+  setTimeout(() => heart.remove(), 8000);
+}
+// more hearts — spawn every 200ms
+setInterval(createHeart, 200);
+
+// Jar click event
+jar.addEventListener('click', () => {
+  jar.classList.add('shake');
+  note.classList.remove('show');
+
+  setTimeout(() => {
+    jar.classList.remove('shake');
+    const randomNote = getNextNote();
+    note.textContent = randomNote;
+    note.classList.add('show');
+  }, 600);
+});
+</script>
+</body>
+</html>
